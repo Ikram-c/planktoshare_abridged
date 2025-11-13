@@ -34,13 +34,6 @@ if __name__ == "__main__":
         help='Please input the name of the cruise/survey. Used for outputs and intermediate files.'
     )
 
-    # Default arguments
-    # parser.add_argument(
-    #     '--train_data_path', type=str,
-    #     default="data/DETAILED_merged",
-    #     help='Path to training data. Required for FastAI initialization'
-    # )
-
     parser.add_argument(
         '--batch_size', type=int,
         default=128, # Increase for larger machines; 80GB GPU can use batch_size of 600
@@ -52,15 +45,21 @@ if __name__ == "__main__":
         type=int, default=340,
         help='Density constant for normalization to get results in units per liter.'
     )
+
+    parser.add_argument(
+        '--classification_subsample',
+        type=int, default=99,
+        help='Percentage of images to subsample for classification (default: 100, i.e., all images).'
+    )
     args = parser.parse_args()
 
     # Extract the arguments for use within the individual functions
     SOURCE_BASE_DIR = args.source_dir
     MODEL_NAME = args.model_name
-    # TRAIN_DATASET = Path(args.train_data_path)
     BATCH_SIZE = args.batch_size
     CRUISE_NAME = args.cruise_name
     DENSITY_CONSTANT = args.density_constant
+    CLASSIFICATION_SUBSAMPLE = args.classification_subsample
     print("[INFO] Arguments received:", args, flush=True)
 
     # Define the number of workers to use for parallelization
@@ -94,7 +93,7 @@ if __name__ == "__main__":
                                                             CRUISE_NAME, # User-defined variable used for outputs
                                                             BATCH_SIZE,  # User-defined variable, how much images to process per batch
                                                             DENSITY_CONSTANT, # 340L per 10 minutes passing through Pi-10
-                                                            max_jobs # For parallelization in remove_corrupted_files.py
+                                                            CLASSIFICATION_SUBSAMPLE, # Percentage of images to process
                                                             )
 
     # Randomly select n samples of each predicted class for validation and future training iterations

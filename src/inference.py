@@ -11,12 +11,13 @@ import time
 from datetime import timedelta
 import sys
 import tarfile, tempfile
+import random
 
 # Custom modules
 from src.remove_corrupted_files import process_corrupted_files
 from src.utils import process_predictions_to_dataframe
 
-def conduct_plankton_inference(SOURCE_BASE_DIR, MODEL_NAME, model_weights, TRAIN_DATASET, CRUISE_NAME, BATCH_SIZE, DENSITY_CONSTANT, max_jobs):
+def conduct_plankton_inference(SOURCE_BASE_DIR, MODEL_NAME, model_weights, TRAIN_DATASET, CRUISE_NAME, BATCH_SIZE, DENSITY_CONSTANT, CLASSIFICATION_SUBSAMPLE=100):
     print(f"[INFO] Started inference...", flush=True)
     start_time = time.time()
     np.random.seed(42)
@@ -87,7 +88,7 @@ def conduct_plankton_inference(SOURCE_BASE_DIR, MODEL_NAME, model_weights, TRAIN
         if not os.path.isdir(date_dir_path): # See README.md for folder structure
             continue
 
-        for tar_file in os.listdir(date_dir_path):
+        for tar_file in sorted(os.listdir(date_dir_path)):
             if not tar_file.endswith('.tar'):
                 continue
 
@@ -131,8 +132,22 @@ def conduct_plankton_inference(SOURCE_BASE_DIR, MODEL_NAME, model_weights, TRAIN
                         print(f"[WARNING] No images found in {tar_file}")
                         print("=================================================")
                         continue
-
                     print(f"[INFO] {len(imgs):,} images in {tar_file}")
+
+                    # Subsample the images if subsample_percent is not 100%
+                    if CLASSIFICATION_SUBSAMPLE < 100:
+                        random.seed(42)
+
+                        # Seperate Background.tif from original list
+                        # This file is used as a 'hack' for downstream processes, like getting geodata and timestamps
+                        background_img = [img for img in imgs if img.name == "Background.tif"]
+                        plankton_imgs = [img for img in imgs if img.name != "Background.tif"]
+
+                        # Randomly sample % of images
+                        num_images_to_sample = int(len(imgs) * CLASSIFICATION_SUBSAMPLE / 100)
+                        plankton_imgs = random.sample(plankton_imgs, num_images_to_sample)
+                        imgs = background_img + plankton_imgs # Combine lists
+                        print(f"[INFO] Randomly selected {CLASSIFICATION_SUBSAMPLE}% of images: {len(imgs):,} images")
 
                     try:
                         try:

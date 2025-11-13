@@ -47,16 +47,16 @@ def evaluate_model(MODEL_NAME, BATCH_SIZE, images_path, REFERENCE_PATH, TRAIN_DA
                     ); # creates pretrained model
     learn.model = torch.nn.DataParallel(learn.model) # Parallels computations over multiplle GPUs
 
-    print(f'This is Plankton Identifier version: {MODEL_NAME}')
-    print(f'The batchsize is set at: {BATCH_SIZE}')
-    print(f'The loss function is: {learn.loss_func}') # Double check current loss func
+    # Get images to predict
+    imgs = get_image_files(images_path)
+
+    print(f'[INFO] This is Plankton Identifier version: {MODEL_NAME}')
+    print(f'[INFO] The batchsize is set at: {BATCH_SIZE}')
+    print(f'[INFO] The loss function is: {learn.loss_func}') # Double check current loss func
     print(f'[INFO] {len(imgs):,} images in {images_path}')
 
 
-    learn.load('Plankton_imager_v01_stage-2_Best', weights_only=False)
-
-    # Get images to predict
-    imgs = get_image_files(images_path);imgs.sort();imgs
+    learn.load(MODEL_NAME, weights_only=False)
 
     print(f'The path to the first image is: {imgs[0]}')
     print(f'The path to the last image is: {imgs[-1]}')
@@ -127,7 +127,7 @@ def evaluate_model(MODEL_NAME, BATCH_SIZE, images_path, REFERENCE_PATH, TRAIN_DA
     print(F"[INFO] Finished evaluate.py")
 
 # Hard-coded variables
-MODEL_NAME = 'Plankton_imager_v01b' # Insert your model filename; see train.py
+MODEL_NAME = 'ResNet50PlanktoFAIR_WeightedLoss' # Insert your model filename; see train.py
 BATCH_SIZE = 128
 REFERENCE_PATH = 'data/DETAILED_test.csv'
 TRAIN_DATASET = Path('data/DETAILED_merged')

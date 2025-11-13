@@ -18,19 +18,19 @@ if __name__ == "__main__":
     # Mandatory arguments
     parser.add_argument(
         '--source_dir', type=str,
-        default="data/demo_inference",
+        default="data/2023_MONS_Tridens",
         help='Base directory for source data captured by the Pi-10'
     )
 
     parser.add_argument(
         '--model_name', type=str,
-        default="OSPAR",
+        default="ResNet50-detailed",
         help="Please input the name of the model to use. Options are 'OSPAR' and 'ResNet50-Detailed"
     )
 
     parser.add_argument(
         '--cruise_name', type=str,
-        default="demo_PIUG",
+        default="2023_MONS_Tridens",
         help='Please input the name of the cruise/survey. Used for outputs and intermediate files.'
     )
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         '--classification_subsample',
-        type=int, default=99,
+        type=int, default=100,
         help='Percentage of images to subsample for classification (default: 100, i.e., all images).'
     )
     args = parser.parse_args()
@@ -62,26 +62,23 @@ if __name__ == "__main__":
     CLASSIFICATION_SUBSAMPLE = args.classification_subsample
     print("[INFO] Arguments received:", args, flush=True)
 
-    # Define the number of workers to use for parallelization
-    max_jobs = min(8, os.cpu_count() or 4)  # Use up to 8 workers or CPU count, whichever is smaller
-
     # Set the correct model based on user input
     if 'ospar' in MODEL_NAME.lower():
         # OSPAR classifier for six number of classes; significantly faster compared to the default option
         model_weights = Path('Plankton_imager_v03_stage-2_Best')
         TRAIN_DATASET = Path('data/OSPAR_merged')
-        print(f"[INFO] User has chosen to use the {MODEL_NAME} model with weights: {model_weights}", flush=True)
+        print(f"[INFO] User has chosen to use the {MODEL_NAME} model with weights: {model_weights}")
     else:
         # Default option is the ResNet50 predicting 49 different plankton and non-plankton classes
         model_weights = Path('Plankton_imager_v01_stage-2_Best')
         TRAIN_DATASET = Path('data/DETAILED_merged')
         MODEL_NAME = "ResNet50-Detailed" # Reset the variable in case different spelling is used
-        print(f"[INFO] User has chosen to use the {MODEL_NAME} model with weights: {model_weights}, flush=True")
+        print(f"[INFO] User has chosen to use the {MODEL_NAME} model with weights: {model_weights}")
     
     # Check if the model weights file exists
     # FastAI hardcodes the location in /models/ and does not add .pth initially
     if not os.path.exists(os.path.join("models", f"{model_weights}.pth")):
-        print(f"Error: The model weights file '{model_weights}' does not exist.", flush=True)
+        print(f"Error: The model weights file '{model_weights}' does not exist.")
         sys.exit(1)  # Exit with an error code
 
     # Conduct inference
@@ -101,6 +98,9 @@ if __name__ == "__main__":
 
     # Generate the Word document detailing the cruise
     document_path = create_word_document(results_dir, CRUISE_NAME, DENSITY_CONSTANT, TRAIN_DATASET, model_weights)
+
+    # Convert outputs to Darwin Core format
+    # Not implemented yet
 
     # Compress original data for long-term storage
     # Not implemented yet

@@ -377,10 +377,6 @@ def get_geographic_data(image_path):
         degrees, minutes, seconds = value
         return degrees + (minutes / 60.0) + (seconds / 3600.0)
 
-    # Extract latitude-longitude from the EXIF metadata
-    # print(f"Filepath for retrival: {image_path}")
-    # print(f"Does Background.tif exist: {os.path.exists(image_path)}")
-
     with Image.open(image_path) as image:
         exif_data = image.getexif()
         if exif_data:
@@ -388,7 +384,7 @@ def get_geographic_data(image_path):
             
             if not ifd:
                 print(f"[WARNING] '{image_path}' has no GPS information.")
-                return None
+                return None, None
 
             gps_info = {}
             for key, val in ifd.items():
@@ -406,7 +402,7 @@ def get_geographic_data(image_path):
             # Check for (0,0) coordinates
             if latitude == 0 and longitude == 0:
                 print(f"[WARNING] '{image_path}' has null point (0,0) coordinates.")
-                return None
+                return None, None
 
             return latitude, longitude
 

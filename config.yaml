@@ -1,0 +1,55 @@
+stream:
+  tar_paths:
+    - ""
+  output_format: "numpy"
+  max_images: null
+  min_size: [128, 128]
+  max_size: [16384, 16384]
+  convert_mode: null
+  extensions:
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".tiff"
+    - ".tif"
+    - ".bmp"
+    - ".webp"
+
+concurrency:
+  enabled: true
+  max_workers: 8
+  chunk_size: 100
+
+grouper:
+  tile_size: 300
+  snap_grid: null
+  snap_mode: "ceil"
+  min_bucket_size: 1
+  max_bucket_size: null
+  pad_to_bucket: true
+
+filter:
+  checkpoint_path: "models/bubble_autoencoder.pth"
+  threshold: 0.5
+  spot_sigma: 3.5
+  outline_sigma: 1.0
+  device: "cpu"
+  fallback_to_skimage: true
+
+zarr_writer:
+  output_dir: "output/zarr"
+  tile_size: 300
+  compression_codec: "blosc_zstd"
+  compression_level: 5
+  shuffle: "bitshuffle"
+  zarr_format: 2
+  dimension_separator: "/"
+
+ome_converter:
+  output_dir: "output/ome_zarr"
+  pixel_size_um: 0.36
+  generate_pyramid: true
+  pyramid_levels: 3
+  pyramid_downsample_factor: 2
+  zip_store: true
+  tile_size: 300

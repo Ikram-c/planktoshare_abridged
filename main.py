@@ -77,7 +77,7 @@ if __name__ == "__main__":
     
     # Check if the model weights file exists
     # FastAI hardcodes the location in /models/ and does not add .pth initially
-    if not os.path.exists(os.path.join("models", f"{model_weights}.pth")):
+    if not os.path.exists(os.path.join("pre_process/ome_converter/models", f"{model_weights}.pth")):
         print(f"Error: The model weights file '{model_weights}' does not exist.")
         sys.exit(1)  # Exit with an error code
 

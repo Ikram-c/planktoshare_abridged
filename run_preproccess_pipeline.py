@@ -6,11 +6,11 @@ from pathlib import Path
 
 import yaml
 
-from tar_streamer import ConcurrencyConfig, StreamConfig, TarImageStream
-from resolution_grouper import GrouperConfig, ResolutionGrouper
-from bubble_filter import BubbleFilter, FilterConfig
-from zarr_writer import ZarrWriter, ZarrWriterConfig
-from ome_converter import OmeConverterConfig, OmeZarrConverter
+from pre_process.tar_streamer import ConcurrencyConfig, StreamConfig, TarImageStream
+from pre_process.resolution_grouper import GrouperConfig, ResolutionGrouper
+from pre_process.bubble_filter import BubbleFilter, FilterConfig
+from pre_process.zarr_writer import ZarrWriter, ZarrWriterConfig
+from pre_process.ome_converter import OmeConverterConfig, OmeZarrConverter
 
 logging.basicConfig(
     level=logging.INFO,

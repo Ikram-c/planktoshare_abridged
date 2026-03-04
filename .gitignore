@@ -5,7 +5,7 @@ __pycache__/
 
 # Ignore the top-level directories
 data/*
-models/*
+pre_process/ome_converter/models/*
 reports/*
 /results/
 /doc/2025*

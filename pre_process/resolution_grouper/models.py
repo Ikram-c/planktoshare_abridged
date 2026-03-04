@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 
-from tar_streamer.models import ImageRecord
+from pre_process.tar_streamer import ImageRecord
 
 
 class SnapMode(Enum):

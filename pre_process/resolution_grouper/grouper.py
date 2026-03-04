@@ -5,7 +5,7 @@ from typing import Generator, Iterable
 
 import numpy as np
 
-from tar_streamer.models import ImageRecord
+from pre_process.tar_streamer import ImageRecord
 from .models import (
     BucketKey,
     BucketStats,

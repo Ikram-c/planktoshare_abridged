@@ -1,11 +1,8 @@
 import logging
-from collections import defaultdict
-from typing import Generator
 
-from tar_streamer.models import ImageRecord
-from resolution_grouper.models import BucketKey
+from pre_process.tar_streamer import ImageRecord
+from pre_process.resolution_grouper.models import BucketKey
 from .autoencoder import (
-    SupervisedAutoencoder,
     load_checkpoint,
     predict,
 )

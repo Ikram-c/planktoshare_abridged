@@ -9,9 +9,9 @@ from numcodecs import Blosc
 from skimage.transform import downscale_local_mean
 from zarr.storage import LocalStore, ZipStore
 
-from tar_streamer.models import ImageRecord
-from resolution_grouper.models import BucketKey
-from zarr_writer.models import ZarrWriterConfig
+from pre_process.tar_streamer import ImageRecord
+from pre_process.resolution_grouper.models import BucketKey
+from pre_process.zarr_writer import ZarrWriterConfig
 from .metadata import build_multiscales_attrs, build_pipeline_metadata
 from .models import OmeConverterConfig, OmeManifest
 
@@ -37,7 +37,7 @@ class OmeZarrConverter:
         )
 
     def _build_compressor(self) -> Blosc:
-        from zarr_writer.writer import CODEC_MAP, SHUFFLE_MAP
+        from pre_process.zarr_writer import CODEC_MAP, SHUFFLE_MAP
         return Blosc(
             cname=CODEC_MAP[self._writer_config.compression_codec],
             clevel=self._writer_config.compression_level,

@@ -1,3 +1,12 @@
+"""
+Microscopy Image Processing Pipeline.
+
+This module provides a continuous pipeline for processing microscopy images.
+It handles streaming images from tar archives, grouping them by resolution,
+filtering anomalies (like bubbles) via an autoencoder, and writing the 
+results to Zarr and OME-Zarr formats.
+"""
+
 import argparse
 import json
 import logging
@@ -20,11 +29,40 @@ logger = logging.getLogger("pipeline")
 
 
 def load_config(config_path: str) -> dict:
+    """
+    Load a YAML configuration file.
+
+    :param config_path: The file path to the YAML configuration file.
+    :type config_path: str
+    :return: A dictionary containing the parsed configuration parameters.
+    :rtype: dict
+    """
     with open(config_path) as fh:
         return yaml.safe_load(fh)
 
 
-def run(config_path: str, skip_filter: bool = False, skip_zarr: bool = False):
+def run(config_path: str, skip_filter: bool = False, skip_zarr: bool = False) -> None:
+    """
+    Execute the microscopy image processing pipeline.
+
+    This function orchestrates the entire pipeline, encompassing the following stages:
+    
+    * **Stage 1 & 2:** Streaming images from tar archives and grouping them by resolution.
+    * **Stage 3:** (Optional) Filtering images using a bubble autoencoder.
+    * **Stage 4:** (Optional) Writing the filtered image arrays to Zarr format.
+    * **Stage 5:** (Optional) Converting the Zarr arrays to OME-Zarr 0.4 standard.
+    
+    Finally, it generates a comprehensive JSON manifest file containing execution timings,
+    processing statistics, and output file metadata.
+
+    :param config_path: The file path to the YAML configuration file.
+    :type config_path: str
+    :param skip_filter: If ``True``, skips the bubble detection filtering stage (Stage 3). Defaults to ``False``.
+    :type skip_filter: bool, optional
+    :param skip_zarr: If ``True``, skips the Zarr and OME-Zarr writing stages (Stages 4 and 5). Defaults to ``False``.
+    :type skip_zarr: bool, optional
+    :return: None
+    """
     t0 = time.perf_counter()
     data = load_config(config_path)
 
@@ -149,7 +187,14 @@ def run(config_path: str, skip_filter: bool = False, skip_zarr: bool = False):
     logger.info("Manifest written to %s", manifest_path)
 
 
-def main():
+def main() -> None:
+    """
+    Parse command-line arguments and invoke the pipeline runner.
+
+    Sets up the argument parser for the command-line interface, extracts
+    the user-provided configuration path and optional stage-skipping flags,
+    and triggers the :func:`run` execution function.
+    """
     parser = argparse.ArgumentParser(
         description="Microscopy image pipeline: tar → filter → OME-Zarr",
     )

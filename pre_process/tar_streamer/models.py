@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Optional, TypedDict
@@ -32,10 +32,12 @@ class StreamConfig:
         ".jpg", ".jpeg", ".png", ".tiff", ".tif", ".bmp", ".webp"
     )
 
-    def __post_init__(self):
-        for path in self.tar_paths:
-            if not Path(path).exists():
-                raise FileNotFoundError(f"Archive not found: {path}")
+    def validate_paths(self) -> None:
+        missing = [p for p in self.tar_paths if not Path(p).exists()]
+        if missing:
+            raise FileNotFoundError(
+                f"Archive(s) not found: {', '.join(missing)}"
+            )
 
     @classmethod
     def from_dict(cls, data: dict) -> "StreamConfig":

@@ -36,6 +36,21 @@ filter:
   device: "cpu"
   fallback_to_skimage: true
 
+rule_filter:
+  spot_sigma: 3.5
+  outline_sigma: 1.0
+  fallback_to_skimage: true
+  local_background: false
+  annulus_width: 10
+  mod_threshold: 0.02
+  intensity_ratio_min: 0.90
+  solidity_min: 0.95
+  eccentricity_max: 0.30
+  gradient_rms_max: null
+  intensity_std_max: null
+  score_weights: [0.4, 0.2, 0.2, 0.2]
+  score_threshold: 0.70
+
 zarr_writer:
   output_dir: "output/zarr"
   tile_size: 300

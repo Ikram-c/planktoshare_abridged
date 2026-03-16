@@ -1,0 +1,73 @@
+# ── Shared constants ──────────────────────────────────────────────────────────
+# All magic numbers are defined once here and referenced below via YAML aliases.
+defaults:
+  tile_size:                &tile_size                300
+  min_size:                 &min_size                 [128, 128]
+  max_size:                 &max_size                 [16384, 16384]
+  max_workers:              &max_workers              8
+  chunk_size:               &chunk_size               100
+  filter_threshold:         &filter_threshold         0.5
+  spot_sigma:               &spot_sigma               3.5
+  outline_sigma:            &outline_sigma            1.0
+  compression_level:        &compression_level        5
+  zarr_format:              &zarr_format              2
+  pyramid_levels:           &pyramid_levels           3
+  pyramid_downsample_factor: &pyramid_downsample_factor 2
+  pixel_size_um:            &pixel_size_um            0.36
+
+# ── Stage configuration ───────────────────────────────────────────────────────
+stream:
+  tar_paths:
+    - "C:\\data\\plank_raw\\1630.tar"
+  output_format: "numpy"
+  max_images: null
+  min_size: *min_size
+  max_size: *max_size
+  convert_mode: null
+  extensions:
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".tiff"
+    - ".tif"
+    - ".bmp"
+    - ".webp"
+
+concurrency:
+  enabled: true
+  max_workers: *max_workers
+  chunk_size: *chunk_size
+
+grouper:
+  tile_size: *tile_size
+  snap_grid: null
+  snap_mode: "ceil"
+  min_bucket_size: 1
+  max_bucket_size: null
+  pad_to_bucket: true
+
+filter:
+  checkpoint_path: "models/bubble_autoencoder.pth"
+  threshold: *filter_threshold
+  spot_sigma: *spot_sigma
+  outline_sigma: *outline_sigma
+  device: "auto"
+  fallback_to_skimage: true
+
+zarr_writer:
+  output_dir: "output/1/zarr"
+  tile_size: *tile_size
+  compression_codec: "blosc_zstd"
+  compression_level: *compression_level
+  shuffle: "bitshuffle"
+  zarr_format: *zarr_format
+  dimension_separator: "/"
+
+ome_converter:
+  output_dir: "output/1/ome_zarr"
+  pixel_size_um: *pixel_size_um
+  generate_pyramid: true
+  pyramid_levels: *pyramid_levels
+  pyramid_downsample_factor: *pyramid_downsample_factor
+  zip_store: true
+  tile_size: *tile_size

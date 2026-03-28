@@ -113,3 +113,15 @@ CRUISE_NAME_UNTARRED
 
 ## Known errors
 1. Error in `learn.load(MODEL_FILENAME, weights_only=False)` can be caused in older PyTorch versions. In this case, simply remove the `weights_only` argument.
+
+
+## Release Notes
+A demonstration directory has been created, containing the installation instructions, which the developer plans to move to the install directory at some point. These instructions have also been copied into the Readme to provide two points of reference. They will be properly formatted in the next release.
+
+In this initial release, the demonstration notebooks cover the preprocessing stages. They serve as a broken-down version of these stages in an IPYNB format, allowing end users to get a general understanding of the processes being run. It does not delve into the codebase's technical underbelly or the extensive refactoring required later to make the project complete and entirely bug-free. The author notes that testing has not been as extensive as desired. However, the pipeline works reliably enough that if the instructions are followed perfectly, users should not encounter issues.
+
+It should also be noted that the developers did not have access to a Mac, but Dr. Just uses one as his primary operating system. Therefore, the software cannot be considered fully Mac-ready until he completes his testing. Once tested, any early bugs can be removed to ensure cross-platform operability, which will tie up the first release.
+
+Improvements for the second release are already in the pipeline. These were temporarily paused to prioritize delivering a strong minimum viable product that significantly improves upon the previous plankton model.
+
+The team plans to run benchmarks between the two models. The results are expected to be significant because the architecture was shifted from standard, off-the-shelf computer vision models to a solution specifically tailored for bio-imaging and microscope imaging.
